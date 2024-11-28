@@ -33,7 +33,14 @@ function agregar() {
 function actualizarTabla(tareaText) {
     
     if (tareaText !== '') {
-        let nuevaFila = `<tr><td>${tareaText}</td></tr>`; 
+        let nuevaFila = `<tr>
+                            <td>${tareaText}</td>
+                            <td class="d-flex justify-content-end">
+                                <button class=" ml-auto btn btn-success me-2">Completados</button>
+                                <button class=" ml-auto btn btn-warning me-2">Pendientes</button>
+                                <button class=" ml-auto btn btn-danger">Eliminar</button>
+                            </td>
+                        </tr>`; 
 
         
         tablaTareas.append(nuevaFila);
