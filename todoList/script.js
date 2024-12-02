@@ -64,24 +64,28 @@ function completarTarea() {
     tablaTareas.on('click', '.btnCompletar', function(event) {
         event.preventDefault();
         let tareaTexto = $(this).closest('tr').find('td:first').text(); 
-        completadas.push(tareaTexto);
-        pendientes = pendientes.filter(tarea => tarea !== tareaTexto); 
-        todas = todas.filter(tarea => tarea !== tareaTexto); 
-        actualizarTablaTodas(); 
-        actualizarTablaCompletadas(); 
+        if (!completadas.includes(tareaTexto)) {
+            completadas.push(tareaTexto);
+            pendientes = pendientes.filter(tarea => tarea !== tareaTexto); 
+            actualizarTablaTodas(); 
+            actualizarTablaCompletadas(); 
+        }
     });
 }
 
 function eliminar() {
     tablaTareas.on('click', '.btnEliminar', function(event) {
         event.preventDefault();
-        let tareaTexto = $(this).closest('tr').remove();
+        let tareaTexto = $(this).closest('tr').find('td:first').text();
+        todas = todas.filter(tarea => tarea !== tareaTexto);
+        pendientes = pendientes.filter(tarea => tarea !== tareaTexto);
         actualizarTablaTodas();
     });
 
     tablaCompletadas.on('click', '.btnEliminar', function(event) {
         event.preventDefault();
-        let tareaTexto = $(this).closest('tr').remove(); 
+        let tareaTexto = $(this).closest('tr').find('td:first').text(); 
+        completadas = completadas.filter(tarea => tarea !== tareaTexto);
         actualizarTablaCompletadas(); 
     });
 }
@@ -90,5 +94,4 @@ eliminar();
 agregar();
 completarTarea();
 
-
-//arreglar elminar dar funcion a la seccion de completadas con otra tabla escondida
+//Poner en el tbdoy d-none y cuando cambies de seccion se quite la lase de d-none para que salga 
