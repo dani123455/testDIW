@@ -35,6 +35,12 @@ function agregar() {
 
 function actualizarTablaTodas() {
     tablaTareas.empty();
+    let encabezado = `
+                <tr class="text-center">
+                    <th colspan="2">Todas las Tareas</th>
+                </tr>`;
+        tablaTareas.append(encabezado);
+
     todas.forEach(function(tarea) {
         if (tarea.texto !== '') {
             let nuevaFila = `
@@ -53,6 +59,12 @@ function actualizarTablaTodas() {
 
 function actualizarTablaCompletadas() {
     tablaCompletadas.empty();
+    let encabezado = `
+    <tr class="text-center">
+        <th colspan="2">Tareas Completadas</th>
+    </tr>`;
+    tablaCompletadas.append(encabezado);
+
     completadas.forEach(function(tarea) {
         let nuevaFila = `
             <tr data-id="${tarea.id}">
@@ -76,6 +88,25 @@ function completarTarea() {
             completadas.push(tareaCompletar);
             pendientes = pendientes.filter(tarea => tarea.id !== tareaId);
             
+            tareaCompletar.texto = `<del>${tareaCompletar.texto}</del>`
+
+            actualizarTablaTodas();
+            actualizarTablaCompletadas();
+            actualizarTablaPendientes();
+        }
+    });
+
+    tablaPendientes.on('click', '.btnCompletar', function(event) {
+        event.preventDefault();
+        let tareaId = $(this).closest('tr').data('id');
+
+        let tareaCompletar = pendientes.find(tarea => tarea.id === tareaId);
+        if (tareaCompletar) {
+            completadas.push(tareaCompletar);
+            pendientes = pendientes.filter(tarea => tarea.id !== tareaId);
+            
+            tareaCompletar.texto = `<del>${tareaCompletar.texto}</del>`
+
             actualizarTablaTodas();
             actualizarTablaCompletadas();
             actualizarTablaPendientes();
@@ -85,6 +116,12 @@ function completarTarea() {
 
 function actualizarTablaPendientes() {
     tablaPendientes.empty();
+
+    let encabezado = `
+        <tr class="text-center">
+            <th colspan="2">Tareas Pendientes</th>
+        </tr>`;
+    tablaPendientes.append(encabezado);
     pendientes.forEach(function(tarea) {
         if (tarea.texto !== '') {
             let nuevaFila = `
@@ -101,10 +138,6 @@ function actualizarTablaPendientes() {
     });
 }
 
-
-
-
-
 function eliminar() {
     tablaTareas.on('click', '.btnEliminar', function(event) {
         event.preventDefault();
@@ -116,9 +149,22 @@ function eliminar() {
         
         actualizarTablaTodas();
         actualizarTablaCompletadas();
+        actualizarTablaPendientes();
     });
 
     tablaCompletadas.on('click', '.btnEliminar', function(event) {
+        event.preventDefault();
+        let tareaId = $(this).closest('tr').data('id');
+        todas = todas.filter(tarea => tarea.id !== tareaId);
+        pendientes = pendientes.filter(tarea => tarea.id !== tareaId);
+        completadas = completadas.filter(tarea => tarea.id !== tareaId);
+        
+        actualizarTablaTodas();
+        actualizarTablaCompletadas();
+        actualizarTablaPendientes();
+    });
+
+    tablaPendientes.on('click', '.btnEliminar', function(event) {
         event.preventDefault();
         let tareaId = $(this).closest('tr').data('id');
         
@@ -128,6 +174,7 @@ function eliminar() {
         
         actualizarTablaTodas();
         actualizarTablaCompletadas();
+        actualizarTablaPendientes();
     });
 }
 
@@ -152,4 +199,4 @@ agregar();
 completarTarea();
 manejoSecciones();
 
-//Poner el tachado solucionar lo que se duplica y hacer ek editar
+//hacer el editar con promt
