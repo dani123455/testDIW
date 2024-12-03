@@ -11,6 +11,8 @@ let tablaCompletadas = $('#tablaCompletadas');
 let tablaPendientes = $('#tablaPendientes');
 let secciones = $('#secciones');
 
+let contadorId = 0; 
+
 function agregar() {
     formulario.on('submit', function(event) {
         event.preventDefault();
@@ -20,21 +22,24 @@ function agregar() {
         } else {
             mensajeError.addClass('d-none');
             let tareaTexto = input.val().trim();
-            todas.push(tareaTexto);
-            pendientes.push(tareaTexto);
+            contadorId++;
+            let nuevaTarea = { id: contadorId, texto: tareaTexto };
+            todas.push(nuevaTarea);
+            pendientes.push(nuevaTarea);
             input.val('');
             actualizarTablaTodas();
+            actualizarTablaPendientes();
         }
     });
 }
 
 function actualizarTablaTodas() {
     tablaTareas.empty();
-    todas.forEach(function(tareaTexto) {
-        if (tareaTexto !== '') {
+    todas.forEach(function(tarea) {
+        if (tarea.texto !== '') {
             let nuevaFila = `
-                <tr>
-                    <td>${tareaTexto}</td>
+                <tr data-id="${tarea.id}">
+                    <td>${tarea.texto}</td>
                     <td class="d-flex justify-content-end">
                         <button class="ml-auto btn btn-success me-2 btnCompletar">Completar</button>
                         <button class="ml-auto btn btn-warning me-2">Editar</button>
@@ -48,50 +53,80 @@ function actualizarTablaTodas() {
 
 function actualizarTablaCompletadas() {
     tablaCompletadas.empty();
-    if(tablaCompletadas.on('click','.btnSeccionCompletar', function(event){
-        event.preventDefault();
-        completadas.forEach(function(tareaCompletada) {
-            let nuevaFila = `
-                <tr>
-                    <td>${tareaCompletada}</td>
-                    <td class="d-flex justify-content-end">
-                        <button class="ml-auto btn btn-warning me-2">Editar</button>
-                        <button class="ml-auto btn btn-danger btnEliminar">Eliminar</button>
-                    </td>
-                </tr>`;
-            tablaCompletadas.append(nuevaFila);
-        });
-    }));
-
+    completadas.forEach(function(tarea) {
+        let nuevaFila = `
+            <tr data-id="${tarea.id}">
+                <td>${tarea.texto}</td>
+                <td class="d-flex justify-content-end">
+                    <button class="ml-auto btn btn-warning me-2">Editar</button>
+                    <button class="ml-auto btn btn-danger btnEliminar">Eliminar</button>
+                </td>
+            </tr>`;
+        tablaCompletadas.append(nuevaFila);
+    });
 }
 
 function completarTarea() {
     tablaTareas.on('click', '.btnCompletar', function(event) {
         event.preventDefault();
-        let tareaTexto = $(this).closest('tr').find('td:first').text();
-        
-        if (!completadas.includes(tareaTexto)) {
-            completadas.push(tareaTexto);
-            pendientes = pendientes.filter(tarea => tarea !== tareaTexto);
+        let tareaId = $(this).closest('tr').data('id');
+
+        let tareaCompletar = pendientes.find(tarea => tarea.id === tareaId);
+        if (tareaCompletar) {
+            completadas.push(tareaCompletar);
+            pendientes = pendientes.filter(tarea => tarea.id !== tareaId);
+            
             actualizarTablaTodas();
             actualizarTablaCompletadas();
+            actualizarTablaPendientes();
         }
     });
 }
 
+function actualizarTablaPendientes() {
+    tablaPendientes.empty();
+    pendientes.forEach(function(tarea) {
+        if (tarea.texto !== '') {
+            let nuevaFila = `
+                <tr data-id="${tarea.id}">
+                    <td>${tarea.texto}</td>
+                    <td class="d-flex justify-content-end">
+                        <button class="ml-auto btn btn-success me-2 btnCompletar">Completar</button>
+                        <button class="ml-auto btn btn-warning me-2">Editar</button>
+                        <button class="ml-auto btn btn-danger btnEliminar">Eliminar</button>
+                    </td>
+                </tr>`;
+            tablaPendientes.append(nuevaFila);
+        }
+    });
+}
+
+
+
+
+
 function eliminar() {
     tablaTareas.on('click', '.btnEliminar', function(event) {
         event.preventDefault();
-        let tareaTexto = $(this).closest('tr').find('td:first').text();
-        todas = todas.filter(tarea => tarea !== tareaTexto);
-        pendientes = pendientes.filter(tarea => tarea !== tareaTexto);
+        let tareaId = $(this).closest('tr').data('id');
+        
+        todas = todas.filter(tarea => tarea.id !== tareaId);
+        pendientes = pendientes.filter(tarea => tarea.id !== tareaId);
+        completadas = completadas.filter(tarea => tarea.id !== tareaId);
+        
         actualizarTablaTodas();
+        actualizarTablaCompletadas();
     });
 
     tablaCompletadas.on('click', '.btnEliminar', function(event) {
         event.preventDefault();
-        let tareaTexto = $(this).closest('tr').find('td:first').text();
-        completadas = completadas.filter(tarea => tarea !== tareaTexto);
+        let tareaId = $(this).closest('tr').data('id');
+        
+        todas = todas.filter(tarea => tarea.id !== tareaId);
+        pendientes = pendientes.filter(tarea => tarea.id !== tareaId);
+        completadas = completadas.filter(tarea => tarea.id !== tareaId);
+        
+        actualizarTablaTodas();
         actualizarTablaCompletadas();
     });
 }
@@ -112,10 +147,9 @@ function manejoSecciones() {
     });
 }
 
-
 eliminar();
 agregar();
 completarTarea();
 manejoSecciones();
 
-//HACER QUE SE VEA LAS TAREAS EN COMPLETADO Y PENDIENTES 
+//Poner el tachado solucionar lo que se duplica y hacer ek editar
