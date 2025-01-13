@@ -1,0 +1,93 @@
+/* Variables para el tema claro*/
+:root {
+    --color-fondo: #ffffff; 
+    --color-texto: #000000; 
+    --color-secundario: #007bff; 
+    --color-fondo-header: #f1f1f1; 
+}
+
+/* Tema oscuro */
+.dark-theme {
+    --color-fondo: #121212; 
+    --color-texto: #ffffff;
+    --color-secundario: #bb86fc; 
+    --color-fondo-header: #333333; 
+}
+
+/* Estilos para el body */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    transition: background-color 0.5s, color 0.5s; 
+}
+
+/* Estilos del header */
+header {
+    background-color: var(--color-fondo-header); 
+    width: 100%;
+    padding: 20px;
+    transition: background-color 0.5s; 
+}
+
+h1 {
+    text-align: center;
+}
+
+/* Estilos para la navegación */
+nav {
+    text-align: center;
+    margin-top: 10px; 
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    display: inline;
+    margin: 0 15px; 
+}
+
+a {
+    text-decoration: none;
+    color: var(--color-texto); 
+}
+
+/* Estilos botones de header */
+.container {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+}
+
+.boton {
+    margin-left: 10px;
+}
+
+/* Estilos para secciones */
+.containerSecciones {
+    text-align: center;
+    margin-bottom: 100px;
+    margin-top: 100px;
+}
+
+/* Estilo para los botones dentro de las secciones */
+button {
+    background-color: var(--color-secundario);
+    color: var(--color-fondo);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.5s, color 0.5s;
+}
+
+button:hover {
+    background-color: var(--color-fondo);
+    color: var(--color-secundario);
+    border: 1px solid var(--color-secundario);
+}
